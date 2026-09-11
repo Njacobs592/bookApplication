@@ -1,0 +1,1 @@
+/home/njacobs2/myGitRepos/Rust/bookApp/target/debug/bookApp: /home/njacobs2/myGitRepos/Rust/bookApp/src/chapters.rs /home/njacobs2/myGitRepos/Rust/bookApp/src/lore.rs /home/njacobs2/myGitRepos/Rust/bookApp/src/main.rs /home/njacobs2/myGitRepos/Rust/bookApp/src/projects.rs
