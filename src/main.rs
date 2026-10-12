@@ -18,13 +18,15 @@ use std::rc::Rc;
 const BOOK_DIR: &str = "book";
 
 const IDE_CSS: &str = r#"
-@define-color app_bg #1e1f22;
-@define-color panel_bg #252629;
-@define-color elevated_bg #2b2d30;
-@define-color border #3b3d41;
-@define-color text #d7dae0;
-@define-color muted #8f939b;
-@define-color accent #4f8cc9;
+@define-color app_bg #101214;
+@define-color panel_bg #171a1f;
+@define-color elevated_bg #1d2229;
+@define-color editor_bg #14171b;
+@define-color border #2a3139;
+@define-color text #e5e7eb;
+@define-color muted #8b949e;
+@define-color accent #9a86d8;
+@define-color accent_hover #aa96e8;
 
 window {
     background-color: @app_bg;
@@ -32,25 +34,48 @@ window {
 }
 
 headerbar.ide-header {
-    min-height: 46px;
-    padding: 5px 10px;
-    background-color: @elevated_bg;
+    min-height: 54px;
+    padding: 7px 16px;
+    background-color: @panel_bg;
     border-bottom: 1px solid @border;
 }
 
 headerbar.ide-header button,
 headerbar.ide-header combobox button {
-    min-height: 30px;
-    padding: 0 10px;
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid @border;
+    border-radius: 6px;
+    background-color: @elevated_bg;
+    color: @text;
+    box-shadow: none;
+}
+
+headerbar.ide-header button:hover,
+headerbar.ide-header combobox button:hover {
+    background-color: #252b33;
+    border-color: #3a424c;
 }
 
 headerbar.ide-header button.primary {
     color: #ffffff;
     background-color: @accent;
+    border-color: @accent;
+    font-weight: bold;
+}
+
+headerbar.ide-header button.primary:hover {
+    background-color: @accent_hover;
+    border-color: @accent_hover;
 }
 
 combobox.project-selector {
-    min-width: 190px;
+    min-width: 210px;
+}
+
+headerbar.ide-header label {
+    color: @text;
+    font-weight: bold;
 }
 
 notebook.workspace {
@@ -60,12 +85,14 @@ notebook.workspace {
 notebook.workspace > header {
     background-color: @panel_bg;
     border-bottom: 1px solid @border;
+    padding: 0 8px;
 }
 
 notebook.workspace tab {
-    min-height: 34px;
-    padding: 0 16px;
+    min-height: 40px;
+    padding: 0 18px;
     color: @muted;
+    font-weight: bold;
 }
 
 notebook.workspace tab:checked {
@@ -79,10 +106,11 @@ notebook.workspace tab:checked {
 }
 
 .sidebar-title {
-    padding: 14px 16px 8px;
+    padding: 18px 16px 10px;
     color: @muted;
-    font-size: 0.9em;
+    font-size: 0.82em;
     font-weight: bold;
+    letter-spacing: 1px;
 }
 
 .list-panel {
@@ -90,8 +118,10 @@ notebook.workspace tab:checked {
 }
 
 .list-panel row {
-    min-height: 36px;
-    padding: 0 8px;
+    min-height: 40px;
+    margin: 2px 8px;
+    padding: 0 10px;
+    border-radius: 6px;
     border-left: 3px solid transparent;
 }
 
@@ -101,18 +131,28 @@ notebook.workspace tab:checked {
 
 .list-panel row:selected {
     color: #ffffff;
-    background-color: #365a8a;
+    background-color: #302a45;
     border-left-color: @accent;
 }
 
 .toolbar {
-    padding: 8px;
+    padding: 10px;
     background-color: @elevated_bg;
     border-top: 1px solid @border;
 }
 
 .toolbar button {
     min-height: 30px;
+    border: 1px solid @border;
+    border-radius: 5px;
+    background-color: #252a31;
+    color: @text;
+    box-shadow: none;
+}
+
+.toolbar button:hover {
+    background-color: #303740;
+    border-color: #424b57;
 }
 
 .toolbar button.icon-button {
@@ -124,26 +164,40 @@ notebook.workspace tab:checked {
     color: #e88989;
 }
 
+.toolbar combobox button {
+    min-height: 30px;
+    border-radius: 5px;
+    background-color: #252a31;
+    color: @text;
+}
+
 .editor-surface {
-    background-color: @app_bg;
+    background-color: @editor_bg;
 }
 
 textview.editor {
-    padding: 20px;
-    background-color: @app_bg;
+    padding: 28px 34px;
+    background-color: @editor_bg;
     color: @text;
     caret-color: @accent;
+    font-size: 1.05em;
+    line-height: 1.35;
 }
 
 textview.editor text {
-    background-color: @app_bg;
+    background-color: @editor_bg;
     color: @text;
 }
 
 scrollbar slider {
-    min-width: 8px;
-    min-height: 8px;
-    background-color: #555960;
+    min-width: 7px;
+    min-height: 7px;
+    background-color: #3b424c;
+    border-radius: 4px;
+}
+
+scrollbar trough {
+    background-color: @editor_bg;
 }
 "#;
 
@@ -267,6 +321,10 @@ fn build_ui(app: &Application) {
     chapter_list.style_context().add_class("list-panel");
     let chapter_sidebar = GtkBox::new(Orientation::Vertical, 4);
     chapter_sidebar.style_context().add_class("sidebar");
+    let chapter_title = Label::new(Some("CHAPTERS"));
+    chapter_title.set_xalign(0.0);
+    chapter_title.style_context().add_class("sidebar-title");
+    chapter_sidebar.pack_start(&chapter_title, false, false, 0);
     let chapter_scroll = ScrolledWindow::builder().min_content_width(220).build();
     chapter_scroll.add(&chapter_list);
     chapter_sidebar.pack_start(&chapter_scroll, true, true, 0);
@@ -299,6 +357,10 @@ fn build_ui(app: &Application) {
     lore_list.style_context().add_class("list-panel");
     let lore_sidebar = GtkBox::new(Orientation::Vertical, 4);
     lore_sidebar.style_context().add_class("sidebar");
+    let lore_title = Label::new(Some("LORE & CHARACTERS"));
+    lore_title.set_xalign(0.0);
+    lore_title.style_context().add_class("sidebar-title");
+    lore_sidebar.pack_start(&lore_title, false, false, 0);
     let lore_scroll = ScrolledWindow::builder().min_content_width(260).build();
     lore_scroll.add(&lore_list);
     lore_sidebar.pack_start(&lore_scroll, true, true, 0);
