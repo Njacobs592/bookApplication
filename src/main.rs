@@ -59,14 +59,19 @@ headerbar.ide-header combobox button:hover {
 
 headerbar.ide-header button.primary {
     color: #ffffff;
-    background-color: @accent;
-    border-color: @accent;
+    background-color: #6f5aa6;
+    border-color: #806bb9;
+    font-weight: bold;
+}
+
+headerbar.ide-header button.primary label {
+    color: #ffffff;
     font-weight: bold;
 }
 
 headerbar.ide-header button.primary:hover {
-    background-color: @accent_hover;
-    border-color: @accent_hover;
+    background-color: #806bb9;
+    border-color: #9a86d8;
 }
 
 combobox.project-selector {
