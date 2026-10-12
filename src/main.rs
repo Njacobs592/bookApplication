@@ -58,14 +58,14 @@ headerbar.ide-header combobox button:hover {
 }
 
 headerbar.ide-header button.primary {
-    color: #ffffff;
+    color: @text;
     background-color: #6f5aa6;
     border-color: #806bb9;
     font-weight: bold;
 }
 
 headerbar.ide-header button.primary label {
-    color: #ffffff;
+    color: @text;
     font-weight: bold;
 }
 
