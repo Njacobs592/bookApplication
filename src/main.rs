@@ -181,7 +181,6 @@ textview.editor {
     color: @text;
     caret-color: @accent;
     font-size: 1.05em;
-    line-height: 1.35;
 }
 
 textview.editor text {
