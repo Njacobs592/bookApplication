@@ -51,6 +51,11 @@ headerbar.ide-header combobox button {
     box-shadow: none;
 }
 
+headerbar.ide-header button label,
+headerbar.ide-header combobox button label {
+    color: @text;
+}
+
 headerbar.ide-header button:hover,
 headerbar.ide-header combobox button:hover {
     background-color: #252b33;
@@ -58,20 +63,20 @@ headerbar.ide-header combobox button:hover {
 }
 
 headerbar.ide-header button.primary {
-    color: #ffffff;
-    background-color: #6f5aa6;
-    border-color: #806bb9;
+    color: @text;
+    background-color: #252a31;
+    border-color: @border;
     font-weight: bold;
 }
 
 headerbar.ide-header button.primary label {
-    color: #ffffff;
+    color: @text;
     font-weight: bold;
 }
 
 headerbar.ide-header button.primary:hover {
-    background-color: #806bb9;
-    border-color: #9a86d8;
+    background-color: #303740;
+    border-color: #424b57;
 }
 
 combobox.project-selector {
@@ -158,6 +163,10 @@ notebook.workspace tab:checked {
 .toolbar button:hover {
     background-color: #303740;
     border-color: #424b57;
+}
+
+.toolbar button label {
+    color: @text;
 }
 
 .toolbar button.icon-button {
