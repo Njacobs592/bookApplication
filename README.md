@@ -1,38 +1,85 @@
 # Book App
 
-Book App is a desktop writing application built with Rust and GTK 3. It provides a focused workspace for drafting chapters while keeping book projects, characters, environments, and world-building notes organized on disk.
+Book App is a local-first desktop writing application built with Rust and GTK 3.
+It provides a focused workspace for drafting chapters while keeping book projects,
+characters, environments, and world-building notes organized as plain text.
 
-## Features
+For step-by-step usage and instructions for enabling a dark appearance, see
+[HOWTO.md](HOWTO.md).
 
-- Create, switch between, and remove book projects.
-- Switch between projects from the project selector.
-- Create, edit, rename, delete, and reorder chapters.
-- Save chapter content with the Save button or `Ctrl+S`.
-- Search chapters and lore entries by title; lore entries are grouped by category.
-- Use **Writing Tools → Find in Project** to search chapter and lore titles and contents,
-  including unsaved text in the open editors. Select a result to open that document.
-- Use **Writing Tools → Chapter Outline** to navigate headings in the selected
-  chapter (`# Heading`, `## Scene`, and so on).
-- See the current document's word count and words added during this writing
-  session in the status bar. **Set Session Goal** starts a new session count and
-  shows progress toward a positive whole-number goal. **Focus Mode** hides the
-  sidebars until toggled off.
-- Track the active project and document, with an unsaved-changes indicator.
-- Preserve edits on project changes and window close, and show errors when file operations fail.
-- Maintain lore and character-development entries.
-- Categorize development notes as:
-  - Character
-  - Environment
-  - Lore
-- Edit, rename, and delete lore entries.
-- IDE-inspired dark interface with styled navigation panels, tabs, toolbars, and editor surfaces.
-- Plain-text storage so project files remain easy to inspect, copy, and back up.
-- Reject duplicate chapter and lore file names rather than overwriting existing content.
-- Removing a project requires typing its name and moves it to a recoverable Trash.
-  Use **Writing Tools → Restore Project** to bring it back; the Legacy Book cannot be removed.
-- Saved document versions retain up to 10 earlier revisions per document.
-  Use **Writing Tools → Recover Revision** to restore one for the open chapter or
-  lore entry. The current version is preserved as a revision during recovery.
+## Writing workspace
+
+- Create, rename, and reorder numbered chapters using movement buttons or
+  drag-and-drop. Right-click document lists for contextual actions.
+- Organize characters, environments, and lore with category visibility controls,
+  title filters, reusable templates, and category changes.
+- Use **Writing → Reference pane** to consult lore beside a chapter.
+- Use **Writing → Outline** for live, hierarchical Markdown heading navigation.
+  Use `#` headings and `##` scene headings to structure a plain-text chapter.
+- Use **Writing → Planning and links** for optional summaries, POV, timeline,
+  draft status, tags, word targets, stable document links, and backlinks. Scene
+  planning notes can accompany the heading-based outline in the summary.
+- Configure font and size, line spacing, text width, theme, daily goals, and
+  whether lore contributes to goals under **Writing → Appearance and goals**.
+- Restore the previous project, document, tab, cursor, scroll position, window
+  size, and sidebar widths at startup. Missing documents fall back to available
+  documents; empty collections display creation actions instead of editable blanks.
+- Track manuscript totals, document targets, net session growth, gross additions,
+  and daily net growth. Goals default to net manuscript growth excluding lore.
+  Daily progress rolls over on the local calendar date. Starting a new session
+  resets session counts without resetting daily progress.
+
+## Editing and recovery
+
+- Save both open editors with **Save** or `Ctrl+S`. Switching documents/projects
+  and closing also preserve changes. Save failures keep edits open.
+- Undo/redo with `Ctrl+Z` and `Ctrl+Shift+Z`. Per-document history survives
+  document switches and renames during the application session, not restarts.
+- Recovery drafts are written in the background after idle. They do not replace
+  source files or consume saved revisions. Reopening a document with a draft
+  offers recovery; a conflict warning explains if the disk version changed.
+- Explicit saves atomically replace source documents and retain up to ten earlier
+  revisions. **Document → Compare / recover revision** shows readable timestamps,
+  word counts, and a side-by-side preview. Restoration preserves the current version.
+- Chapters and lore entries, including their revisions and metadata, go to
+  recoverable document Trash after confirmation. Use **Document → Undo last
+  deletion** or **Restore deleted document**. Name collisions are rejected.
+- Project removal requires its exact name and moves it to project Trash.
+  Restore it through the **Project** menu. Legacy Book cannot be removed.
+- External edits are checked before saving. Conflicts are reported rather than
+  silently overwriting another application's changes.
+
+## Search, exchange, and backups
+
+- **Writing → Find / replace** searches the active editor; **Find / replace in
+  project** searches chapter and lore titles and text, including open unsaved text.
+- Search supports literal text, case sensitivity, whole words, Unicode character
+  positions, highlighting, exact-match navigation, and next/previous results.
+- Replacements require a before/after preview and confirmation. Project-wide
+  replacement saves open edits first, checks source files again before applying,
+  retains recoverable originals as revisions, and attempts rollback on failure.
+- **Project → Import chapter** imports a UTF-8 text/Markdown file as one chapter.
+  **Export manuscript** combines chapters in book order, using chapter titles and
+  separators, and excludes lore. Choose `.txt` or `.md` and a location outside the
+  active project. DOCX, PDF, and EPUB are deferred extensions, not supported formats.
+- **Project → Back up project** creates a portable directory copy; **Import project
+  backup** copies it into the library as a new project without overwriting an
+  existing project. Backups include document history and sidecars.
+- **Project → Choose library folder** opens a different library without moving
+  existing projects. The status area displays the current library's full path.
+
+## Keyboard shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl+S` | Save open documents |
+| `Ctrl+Z` / `Ctrl+Shift+Z` | Undo / redo |
+| `Ctrl+N` | Create a document in the active tab |
+| `Ctrl+F` / `Ctrl+Shift+F` | Find/replace in document / project |
+| `F3` / `Shift+F3` | Next / previous search match |
+| `Ctrl+Shift+O` | Show outline |
+| `Ctrl+Tab` | Switch between chapters and lore |
+| `F11` | Toggle focus mode |
 
 ## Requirements
 
@@ -55,7 +102,17 @@ From the project directory:
 cargo run
 ```
 
-The application creates the `book/` storage directory automatically when it starts.
+On first run, the application uses the absolute path to `book/` in the launch
+directory. It remembers that path afterward, so subsequent launches do not depend
+on the working directory. Choosing another library does not migrate or delete
+existing data.
+
+Preferences, workspace positions, and writing progress are stored in
+`$XDG_CONFIG_HOME/bookapp/workspace.json`, or
+`$HOME/.config/bookapp/workspace.json`. Invalid configuration is reported rather
+than silently replaced. For isolated testing or a separate installation,
+`BOOKAPP_CONFIG_DIR` selects the configuration directory and
+`BOOKAPP_STORAGE_DIR` selects the library.
 
 ## Storage Layout
 
@@ -74,14 +131,22 @@ book/
             └── lore/
 ```
 
-Chapter and lore entries are stored as individual UTF-8 text files. File names are derived from their titles, with path separators replaced to keep them safe to store. Saves replace documents atomically and keep up to 10 previous versions; removed projects remain in the Trash until you remove them manually.
+Chapter and lore entries are individual UTF-8 text files. Their parent directories
+also hold `.metadata/` JSON sidecars with stable document IDs and optional planning
+data, `.drafts/` recovery snapshots, and `.revisions/` saved versions. Renaming,
+reordering, recategorizing, and trash/restoration preserve these related files.
+Keep hidden sidecar directories when copying a project manually.
+
+Project Trash and document Trash are separate. Removed content remains recoverable
+until you deliberately remove its Trash files. An intentionally empty chapter
+collection stays empty after reopening.
 
 ## Development
 
 Format the source:
 
 ```bash
-cargo fmt
+cargo fmt --check
 ```
 
 Check the project:
@@ -93,17 +158,27 @@ cargo check
 Run the test suite:
 
 ```bash
-cargo test
+GDK_BACKEND=x11 xvfb-run -a cargo test -- --test-threads=1
 ```
+
+GTK interaction tests require a display and run on a single test thread. The suite
+also covers storage operations, revision preservation, recovery drafts, conflicts,
+Unicode search, undo/redo, metadata, configuration, goals, and portable backups.
+Setting `GDK_BACKEND=x11` ensures GTK uses the isolated Xvfb display even when the
+desktop environment normally selects Wayland.
 
 ## Project Structure
 
 ```text
 src/
-├── main.rs      # GTK application and user interface
+├── main.rs      # Application entry point
+├── ui.rs        # Workspace state, widgets, navigation, and editing actions
+├── ui/          # Search, file/revision actions, settings/planning, and GTK tests
+├── features.rs  # Undo, search, metadata, preferences, workspace, and progress
+├── documents.rs # Drafts, safe writes, document Trash, and portable backups
 ├── chapters.rs  # Chapter storage and ordering
 ├── lore.rs      # Character, environment, and lore storage
-└── projects.rs  # Project discovery and creation
+└── projects.rs  # Project discovery, creation, removal, and restoration
 ```
 
 ## Notes
