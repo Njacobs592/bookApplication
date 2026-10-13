@@ -4,10 +4,21 @@ Book App is a desktop writing application built with Rust and GTK 3. It provides
 
 ## Features
 
-- Create and manage multiple book projects.
+- Create, switch between, and remove book projects.
 - Switch between projects from the project selector.
 - Create, edit, rename, delete, and reorder chapters.
 - Save chapter content with the Save button or `Ctrl+S`.
+- Search chapters and lore entries by title; lore entries are grouped by category.
+- Use **Writing Tools → Find in Project** to search chapter and lore titles and contents,
+  including unsaved text in the open editors. Select a result to open that document.
+- Use **Writing Tools → Chapter Outline** to navigate headings in the selected
+  chapter (`# Heading`, `## Scene`, and so on).
+- See the current document's word count and words added during this writing
+  session in the status bar. **Set Session Goal** starts a new session count and
+  shows progress toward a positive whole-number goal. **Focus Mode** hides the
+  sidebars until toggled off.
+- Track the active project and document, with an unsaved-changes indicator.
+- Preserve edits on project changes and window close, and show errors when file operations fail.
 - Maintain lore and character-development entries.
 - Categorize development notes as:
   - Character
@@ -16,6 +27,12 @@ Book App is a desktop writing application built with Rust and GTK 3. It provides
 - Edit, rename, and delete lore entries.
 - IDE-inspired dark interface with styled navigation panels, tabs, toolbars, and editor surfaces.
 - Plain-text storage so project files remain easy to inspect, copy, and back up.
+- Reject duplicate chapter and lore file names rather than overwriting existing content.
+- Removing a project requires typing its name and moves it to a recoverable Trash.
+  Use **Writing Tools → Restore Project** to bring it back; the Legacy Book cannot be removed.
+- Saved document versions retain up to 10 earlier revisions per document.
+  Use **Writing Tools → Recover Revision** to restore one for the open chapter or
+  lore entry. The current version is preserved as a revision during recovery.
 
 ## Requirements
 
@@ -57,7 +74,7 @@ book/
             └── lore/
 ```
 
-Chapter and lore entries are stored as individual UTF-8 text files. File names are derived from their titles, with path separators replaced to keep them safe to store.
+Chapter and lore entries are stored as individual UTF-8 text files. File names are derived from their titles, with path separators replaced to keep them safe to store. Saves replace documents atomically and keep up to 10 previous versions; removed projects remain in the Trash until you remove them manually.
 
 ## Development
 
